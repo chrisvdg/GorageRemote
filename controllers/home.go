@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/chrisvdg/GoSplittrWeb/config"
+	"github.com/chrisvdg/GorageRemote/config"
 )
 
 // GetHome handles GET request on home route

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/chrisvdg/GoSplittrWeb/config"
-	"github.com/chrisvdg/GoSplittrWeb/controllers"
+	"github.com/chrisvdg/GorageRemote/config"
+	"github.com/chrisvdg/GorageRemote/controllers"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Could not get server config: %v", err)
 		return
 	}
-
+	
 	// TODO: commandline args override
 
 	// routes
