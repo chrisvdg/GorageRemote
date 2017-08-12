@@ -12,12 +12,12 @@ import (
 
 func main() {
 	// init app
-	app, err := config.NewApp("./appconfig.json")
+	app, err := config.NewApp("./config.json")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Could not get server config: %v", err)
 		return
 	}
-	
+
 	// TODO: commandline args override
 
 	// routes

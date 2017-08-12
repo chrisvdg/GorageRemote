@@ -10,10 +10,11 @@ import (
 // App represents data useable throughout the app
 type App struct {
 	AppConfigPath string
-	DBConfigPath  string `json:"db_config_path"`
 	ListenPort    uint16 `json:"port"`
+	SqlitePath    string `json:"sqlitepath"`
 }
 
+// NewApp returns the app data from provided json file
 func NewApp(path string) (App, error) {
 	var app App
 
