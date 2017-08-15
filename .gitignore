@@ -1,6 +1,4 @@
 # executables
-*
-!*.*
 **/*.exe
 
 # json (config) files

@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/http"
 
 	"github.com/chrisvdg/GorageRemote/config"
-	"github.com/chrisvdg/GorageRemote/controllers"
+	server "github.com/chrisvdg/GorageRemote/webserver"
 )
 
 func main() {
@@ -19,11 +18,10 @@ func main() {
 	}
 
 	// set routes
-	setRoutes(app)
+	server.SetRoutes(app)
 
 	// run server
-	fmt.Printf("Webserver running on port: %d\n", app.ListenPort)
-	log.Fatal(http.ListenAndServe(app.ListenPortString(), nil))
+	log.Fatal(server.Run(app))
 }
 
 // SetupApp sets up the app config
@@ -63,11 +61,4 @@ func setupApp() (*config.App, error) {
 	}
 
 	return app, nil
-}
-
-func setRoutes(app *config.App) {
-	// home route
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		controllers.GetHome(w, r, app)
-	})
 }
