@@ -1,4 +1,10 @@
+# executables
+*
+!*.*
+**/*.exe
+
 # json (config) files
 **/*.json
 
+# database files
 **/*.db
