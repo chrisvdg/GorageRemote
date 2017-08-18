@@ -9,9 +9,10 @@ import (
 
 // App represents data useable throughout the app
 type App struct {
-	AppConfigPath string `json:"-"`
-	ListenPort    uint16 `json:"port"`
-	SqlitePath    string `json:"dbpath"`
+	AppConfigPath     string `json:"-"`
+	ListenPort        uint16 `json:"port"`
+	SqlitePath        string `json:"dbpath"`
+	CookiestoreSecret string `json:"cookie_store_secret"`
 }
 
 // NewApp returns the app data from provided json file
@@ -41,8 +42,11 @@ func (app *App) Validate() error {
 	if app.ListenPort <= 0 {
 		return fmt.Errorf("listenport was not provided")
 	}
-	if app.SqlitePath == "" {
+	if len(app.SqlitePath) <= 0 {
 		return fmt.Errorf("database file was not provided")
+	}
+	if len(app.CookiestoreSecret) <= 0 {
+		return fmt.Errorf("cookiestore secret was not provided")
 	}
 	return nil
 }

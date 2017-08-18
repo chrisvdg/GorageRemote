@@ -8,6 +8,7 @@ import (
 
 	"github.com/chrisvdg/GorageRemote/config"
 	server "github.com/chrisvdg/GorageRemote/webserver"
+	"github.com/gorilla/securecookie"
 )
 
 func main() {
@@ -32,15 +33,17 @@ func setupApp() (*config.App, error) {
 	dbPath := flag.String("dbpath", "", "Sets the path to the sqlite database")
 	flag.Parse()
 
-	// setup
+	// setup by config file or cli args
 	app := new(config.App)
-	if *dbPath != "" {
+	if *configPath != "" {
+		fmt.Println("using config file")
 		cfgApp, err := config.NewApp(*configPath)
 		if err != nil {
 			return nil, fmt.Errorf("Could not get server config from file: %v", err)
 		}
 		app = cfgApp
 	} else {
+		fmt.Println("using cli args")
 		app.ListenPort = uint16(*port)
 		app.SqlitePath = *dbPath
 	}
@@ -52,6 +55,11 @@ func setupApp() (*config.App, error) {
 			return nil, err
 		}
 		app.SqlitePath = tmpdbfile.Name()
+	}
+
+	// generate cookiestor secret if not provided or using cli
+	if len(app.CookiestoreSecret) <= 0 {
+		app.CookiestoreSecret = string(securecookie.GenerateRandomKey(64))
 	}
 
 	// validate
