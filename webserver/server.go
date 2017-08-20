@@ -3,6 +3,7 @@ package webserver
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/chrisvdg/GorageRemote/config"
 	"github.com/chrisvdg/GorageRemote/webserver/controllers"
@@ -23,6 +24,10 @@ func Run(app *config.App) error {
 
 // SetRoutes set routes sets the app's routes
 func SetRoutes(app *config.App) {
+	// public assets
+	fs := onlyFiles{http.Dir("assets")}
+	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(fs)))
+
 	// home route
 	http.Handle("/", checkAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		controllers.Home(w, r, app)
@@ -30,10 +35,10 @@ func SetRoutes(app *config.App) {
 
 	// auth routes
 	http.HandleFunc("/auth", func(w http.ResponseWriter, r *http.Request) {
-		controllers.Auth(w, r, app)
+		controllers.Auth(w, r, app, store)
 	})
 	http.HandleFunc("/auth/logout", func(w http.ResponseWriter, r *http.Request) {
-		controllers.AuthLogout(w, r, app)
+		controllers.AuthLogout(w, r, app, store)
 	})
 
 	// api routes
@@ -45,4 +50,24 @@ func SetRoutes(app *config.App) {
 	http.Handle("/admin", checkAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		controllers.Admin(w, r, app)
 	})))
+}
+
+type onlyFiles struct {
+	fs http.FileSystem
+}
+
+func (fs onlyFiles) Open(name string) (http.File, error) {
+	f, err := fs.fs.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	return emptydir{f}, nil
+}
+
+type emptydir struct {
+	http.File
+}
+
+func (f emptydir) Readdir(count int) ([]os.FileInfo, error) {
+	return nil, nil
 }

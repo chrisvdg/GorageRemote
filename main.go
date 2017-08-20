@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/chrisvdg/GorageRemote/db"
+
 	"github.com/chrisvdg/GorageRemote/config"
 	server "github.com/chrisvdg/GorageRemote/webserver"
 	"github.com/gorilla/securecookie"
@@ -15,7 +17,7 @@ func main() {
 	// get app config
 	app, err := setupApp()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("could not set up app: %s\n", err)
 	}
 
 	// set routes
@@ -64,6 +66,12 @@ func setupApp() (*config.App, error) {
 
 	// validate
 	err := app.Validate()
+	if err != nil {
+		return nil, err
+	}
+
+	// setup db
+	app.DB, err = db.NewDB(app.SqlitePath)
 	if err != nil {
 		return nil, err
 	}

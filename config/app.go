@@ -1,6 +1,7 @@
 package config
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +14,7 @@ type App struct {
 	ListenPort        uint16 `json:"port"`
 	SqlitePath        string `json:"dbpath"`
 	CookiestoreSecret string `json:"cookie_store_secret"`
+	DB                *sql.DB `json:"-"`
 }
 
 // NewApp returns the app data from provided json file

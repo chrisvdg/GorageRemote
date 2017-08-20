@@ -8,24 +8,23 @@ import (
 func checkAuth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check login
-		if checklogin(w, r) > 0 {
+		if checklogin(w, r) {
 			next.ServeHTTP(w, r)
 			return
 		}
-		http.Redirect(w, r, "/auth?error=not%20authenticated", 301)
+		http.Redirect(w, r, "/auth?error=not%20authenticated", 303)
 		return
 	})
 }
 
-func checklogin(w http.ResponseWriter, r *http.Request) int {
+func checklogin(w http.ResponseWriter, r *http.Request) bool {
 	// check login
 	s, err := store.Get(r, "authentication")
 	if err != nil {
 		fmt.Println(err)
 	}
-	id := s.Values["id"]
-	if id != nil && id.(int) > 0 {
-		return id.(int)
+	if auth, ok := s.Values["auth"].(bool); ok {
+		return auth
 	}
-	return -1
+	return false
 }
