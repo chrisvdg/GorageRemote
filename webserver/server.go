@@ -25,7 +25,7 @@ func Run(app *config.App) error {
 // SetRoutes set routes sets the app's routes
 func SetRoutes(app *config.App) {
 	// public assets
-	fs := onlyFiles{http.Dir("assets")}
+	fs := onlyFiles{http.Dir("webserver/assets")}
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(fs)))
 
 	// home route
@@ -44,6 +44,9 @@ func SetRoutes(app *config.App) {
 	// api routes
 	http.Handle("/api", checkAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		controllers.API(w, r, app)
+	})))
+	http.Handle("/api/actionsocket", checkAuth(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		controllers.ActionSocket(w, r, app)
 	})))
 
 	// administration route

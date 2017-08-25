@@ -13,15 +13,15 @@ import (
 // Auth handles a request on auth route
 func Auth(w http.ResponseWriter, r *http.Request, app *config.App, store *sessions.CookieStore) {
 	if r.Method == "GET" {
-		// check login
+		// check not logged in
 		// TODO, replace by middelware
 		auth := checklogin(w, r, store)
 		if auth {
 			http.Redirect(w, r, "/", 303)
 			return
 		}
-		// serve static admin login page
-		http.ServeFile(w, r, "static/login.html")
+		// serve static login page
+		http.ServeFile(w, r, "webserver/static/login.html")
 
 	} else if r.Method == "POST" {
 		// handle login form
