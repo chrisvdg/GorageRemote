@@ -3,14 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"log"
 
 	"github.com/chrisvdg/GorageRemote/db"
 
 	"github.com/chrisvdg/GorageRemote/config"
 	server "github.com/chrisvdg/GorageRemote/webserver"
-	"github.com/gorilla/securecookie"
 )
 
 func main() {
@@ -30,7 +28,7 @@ func main() {
 // SetupApp sets up the app config
 func setupApp() (*config.App, error) {
 	// setup flags
-	port := flag.Int("port", 6060, "Sets port of the web server")
+	port := flag.Int("port", 0, "Sets port of the web server")
 	configPath := flag.String("cfg", "", "Sets config file location for the server")
 	dbPath := flag.String("dbpath", "", "Sets the path to the sqlite database")
 	flag.Parse()
@@ -50,22 +48,8 @@ func setupApp() (*config.App, error) {
 		app.SqlitePath = *dbPath
 	}
 
-	// set tmp file for db if none was provided
-	if app.SqlitePath == "" {
-		tmpdbfile, err := ioutil.TempFile("", "")
-		if err != nil {
-			return nil, err
-		}
-		app.SqlitePath = tmpdbfile.Name()
-	}
-
-	// generate cookiestor secret if not provided or using cli
-	if len(app.CookiestoreSecret) <= 0 {
-		app.CookiestoreSecret = string(securecookie.GenerateRandomKey(64))
-	}
-
-	// validate
-	err := app.Validate()
+	// Fill empty app values with default ones
+	err := app.FillEmptyWithDefault()
 	if err != nil {
 		return nil, err
 	}

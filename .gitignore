@@ -6,3 +6,6 @@
 
 # database files
 **/*.db
+
+# certificates and keys
+**/*.pem

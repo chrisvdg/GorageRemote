@@ -1,4 +1,3 @@
-// build
 package rpi
 
 import (

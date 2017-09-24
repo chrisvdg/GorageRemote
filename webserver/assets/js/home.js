@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
     // create websocket
-    var ws = new WebSocket("ws://" + window.location.host + "/api/actionsocket");
+    var ws = new WebSocket("wss://" + window.location.host + "/api/actionsocket");
 
     ws.onopen = function()
     {

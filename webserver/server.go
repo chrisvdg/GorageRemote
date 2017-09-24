@@ -15,11 +15,17 @@ var store *sessions.CookieStore
 
 // Run runs the webserver
 func Run(app *config.App) error {
+	// setup tls
+	err := tlsConfig(app)
+	if err != nil {
+		return err
+	}
+
 	// setup cookiestor
 	store = sessions.NewCookieStore([]byte(app.CookiestoreSecret))
 
 	fmt.Printf("Webserver running on: localhost:%d\n", app.ListenPort)
-	return http.ListenAndServe(app.ListenPortString(), context.ClearHandler(http.DefaultServeMux))
+	return http.ListenAndServeTLS(app.ListenPortString(), app.TLSCertPath, app.TLSKeyPath, context.ClearHandler(http.DefaultServeMux))
 }
 
 // SetRoutes set routes sets the app's routes
