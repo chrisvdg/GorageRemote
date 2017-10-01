@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/chrisvdg/GorageRemote/db"
+	"github.com/chrisvdg/GorageRemote/rpi"
 
 	"github.com/chrisvdg/GorageRemote/config"
 	server "github.com/chrisvdg/GorageRemote/webserver"
@@ -58,6 +59,16 @@ func setupApp() (*config.App, error) {
 	app.DB, err = db.NewDB(app.SqlitePath)
 	if err != nil {
 		return nil, err
+	}
+
+	// setup pin
+	pin, err := rpi.NewPin("gpio17")
+	if err != nil {
+		return nil, err
+	}
+	app.PinMulti = pin
+	if pin == nil {
+		log.Println("pin was nil")
 	}
 
 	return app, nil

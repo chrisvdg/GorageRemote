@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/chrisvdg/GorageRemote/rpi"
 	"github.com/gorilla/securecookie"
 )
 
@@ -20,13 +21,14 @@ var (
 
 // App represents data useable throughout the app
 type App struct {
-	AppConfigPath     string  `json:"-"`
-	ListenPort        uint16  `json:"port"`
-	TLSCertPath       string  `json:"tls_cert_path"`
-	TLSKeyPath        string  `json:"tls_key_path"`
-	SqlitePath        string  `json:"db_path"`
-	CookiestoreSecret string  `json:"cookie_store_secret"`
-	DB                *sql.DB `json:"-"`
+	AppConfigPath     string   `json:"-"`
+	ListenPort        uint16   `json:"port"`
+	TLSCertPath       string   `json:"tls_cert_path"`
+	TLSKeyPath        string   `json:"tls_key_path"`
+	SqlitePath        string   `json:"db_path"`
+	CookiestoreSecret string   `json:"cookie_store_secret"`
+	DB                *sql.DB  `json:"-"`
+	PinMulti          *rpi.Pin `json:"-"`
 }
 
 // NewApp returns the app data from provided json file

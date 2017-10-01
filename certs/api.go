@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/chrisvdg/GorageRemote/config"
+	"github.com/chrisvdg/GorageRemote/rpi"
 	"github.com/gorilla/websocket"
 )
 
@@ -32,6 +33,12 @@ func ActionSocket(w http.ResponseWriter, r *http.Request, app *config.App) {
 	}
 	defer conn.Close()
 
+	pin, err := rpi.NewPin("gpio17")
+	if err != nil {
+		log.Printf("Could not run Action socket because: %s", err)
+		return
+	}
+
 	log.Printf("Client %s subscribed\n", r.RemoteAddr)
 	defer log.Printf("Client %s unsubscribed\n", r.RemoteAddr)
 
@@ -48,7 +55,7 @@ func ActionSocket(w http.ResponseWriter, r *http.Request, app *config.App) {
 		switch string(msg) {
 		case "multi":
 			log.Printf("websocket received multi command: %s", msg)
-			app.PinMulti.Press()
+			pin.Press()
 		default:
 			log.Printf("websocket received unknown command: %s", msg)
 		}
