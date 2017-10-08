@@ -39,7 +39,7 @@ func ActionSocket(w http.ResponseWriter, r *http.Request, app *config.App) {
 		mt, msg, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("error reading from websocket:", err)
-			continue
+			return
 		} else if mt == websocket.BinaryMessage {
 			log.Println("websocket had binary message", err)
 			continue
