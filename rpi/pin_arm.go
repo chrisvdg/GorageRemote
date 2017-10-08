@@ -33,15 +33,27 @@ type Pin struct {
 
 // Press presses the button for a short time
 func (p *Pin) Press() {
-	if !p.pressed {
-		log.Printf("pin %s was pressed", p.name)
-		p.pressed = true
-		defer func() {
-			p.pressed = false
-		}()
-		hwio.DigitalWrite(p.pin, hwio.HIGH)
-		time.Sleep(500 * time.Millisecond)
-		hwio.DigitalWrite(p.pin, hwio.LOW)
-		time.Sleep(500 * time.Millisecond)
-	}
+	go func() {
+		if !p.pressed {
+			log.Printf("pin %s is now being pressed", p.name)
+			p.pressed = true
+			defer func() {
+				p.pressed = false
+			}()
+			err := hwio.DigitalWrite(p.pin, hwio.HIGH)
+			if err != nil {
+				log.Printf("Error while pressing button %s: %s", p.name, err)
+				return
+			}
+			time.Sleep(500 * time.Millisecond)
+			err = hwio.DigitalWrite(p.pin, hwio.LOW)
+			if err != nil {
+				log.Printf("Error while pressing button %s: %s", p.name, err)
+				return
+			}
+			time.Sleep(500 * time.Millisecond)
+		} else {
+			log.Printf("pin %s was already pressed", p.name)
+		}
+	}()
 }
